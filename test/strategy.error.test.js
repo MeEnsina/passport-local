@@ -5,14 +5,14 @@ var chai = require('chai')
 
 
 describe('Strategy', function() {
-    
+
   describe('encountering an error during verification', function() {
-    var strategy = new Strategy(function(username, password, done) {
+    var strategy = new Strategy(function(username, done) {
       done(new Error('something went wrong'));
     });
-    
+
     var err;
-    
+
     before(function(done) {
       chai.passport(strategy)
         .error(function(e) {
@@ -22,24 +22,23 @@ describe('Strategy', function() {
         .req(function(req) {
           req.body = {};
           req.body.username = 'johndoe';
-          req.body.password = 'secret';
         })
         .authenticate();
     });
-    
+
     it('should error', function() {
       expect(err).to.be.an.instanceof(Error);
       expect(err.message).to.equal('something went wrong');
     });
   });
-  
+
   describe('encountering an exception during verification', function() {
-    var strategy = new Strategy(function(username, password, done) {
+    var strategy = new Strategy(function(username, done) {
       throw new Error('something went horribly wrong');
     });
-    
+
     var err;
-    
+
     before(function(done) {
       chai.passport(strategy)
         .error(function(e) {
@@ -49,15 +48,14 @@ describe('Strategy', function() {
         .req(function(req) {
           req.body = {};
           req.body.username = 'johndoe';
-          req.body.password = 'secret';
         })
         .authenticate();
     });
-    
+
     it('should error', function() {
       expect(err).to.be.an.instanceof(Error);
       expect(err.message).to.equal('something went horribly wrong');
     });
   });
-  
+
 });
